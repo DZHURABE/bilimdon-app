@@ -377,6 +377,16 @@ html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
 .plg{color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:800;min-width:34px;text-align:center}
 .pnm{flex:1;min-width:0;display:flex;flex-direction:column}
 .pnm .xs{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pst{font-size:15px;margin:16px 0 8px}
+.plist{display:flex;flex-direction:column;gap:8px}
+.prow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px;border-radius:14px;background:var(--card2);border:1px solid var(--line2)}
+.prow:active{transform:scale(.99)}
+.prow .num{font-size:17px;letter-spacing:.04em;white-space:nowrap}
+.pgo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--ok);color:#fff;flex:none}
+.prow.ph{background:var(--sf2)}
+.pcode{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:18px;padding:6px 10px;border-radius:10px;background:var(--sf2);color:var(--ink)}
+.pced{display:flex;flex-direction:column;gap:6px;margin-top:10px;padding:10px;border-radius:14px;background:var(--card2)}
+.pced input,.pced select{margin:0}
 </style>
 </head>
 <body>
@@ -919,6 +929,18 @@ const I18N={
 'Ҳумо':['Ҳумо','Хумо'],
 'ҳал':['ҳал','решено'],
 /* қўшимча (рендерда учрайдиган) */
+'Айнан шу суммани юборинг — дирамигача, изоҳга кодни ёзинг':['Маҳз ҳамин маблағро фиристед — то дирам, дар шарҳ рамзро нависед','Отправьте ровно эту сумму — до дирама, в комментарии укажите код'],
+'1. Пулни шу карталардан бирига ўтказинг':['1. Пулро ба яке аз ин кортҳо гузаронед','1. Переведите деньги на одну из карт'],
+'Телефон рақамига':['Ба рақами телефон','На номер телефона'],
+'Карта устига босинг — рақам нусхаланади ва банк иловаси очилади. Dushanbe City\'да сумма ва код ўзи ёзилади':['Ба корт пахш кунед — рақам нусхабардорӣ мешавад ва барномаи бонк кушода мешавад. Дар Душанбе Сити маблағ ва рамз худкор навишта мешаванд','Нажмите на карту — номер скопируется и откроется приложение банка. В Dushanbe City сумма и код подставятся сами'],
+'2. Тўлагандан кейин':['2. Баъди пардохт','2. После оплаты'],
+'Тўлов учун карталар':['Кортҳо барои пардохт','Карты для оплаты'],
+'Ўқувчи тўлаганда шу рўйхат чиқади. Dushanbe City картасини босса — сумма ва код билан DC иловаси очилади':['Ҳангоми пардохт ҳамин рӯйхат намоён мешавад. Агар корти Душанбе Ситиро пахш кунад — DC бо маблағ ва рамз кушода мешавад','При оплате ученик видит этот список. Нажатие на карту Dushanbe City открывает DC с суммой и кодом'],
+'Карта қўшиш':['Илова кардани корт','Добавить карту'],
+'Телефон рақами (ўтказма учун':['Рақами телефон (барои интиқол','Номер телефона (для перевода'],
+'Шу рақам уланган банклар':['Бонкҳое, ки ин рақам пайваст аст','Банки, к которым привязан номер'],
+'Номи (масалан: Ҳумо Visa':['Ном (масалан: Ҳумо Visa','Название (например: Хумо Visa'],
+'Бошқа':['Дигар','Другой'],
 'Бўш қолдирилган усул ўқувчиларга кўринмайди':['Усули холӣ ба хонандагон намоён намешавад','Пустой способ не показывается ученикам'],
 'Тўлов ҳаволаси (DC Next\'дан':['Ҳаволаи пардохт (аз DC Next','Ссылка на оплату (из DC Next'],
 'Сумма ва тўлов коди ўзи қўйилади. Бўш бўлса — карта рақамидан ясалади':['Маблағ ва рамзи пардохт худкор гузошта мешаванд. Агар холӣ бошад — аз рақами корт сохта мешавад','Сумма и код платежа подставляются сами. Если пусто — собирается из номера карты'],
@@ -1463,7 +1485,7 @@ const DEF={users:[],questions:STATIC,payments:[],withdrawals:[],prizes:[],closed
  promos:[{code:'МАКТАБ10',pct:10},{code:'BILIM20',pct:20}],
  settings:{plans:[{m:1,price:39},{m:2,price:72},{m:3,price:99},{m:6,price:179},{m:12,price:299}],
   poolPct:40,minPts:100,minAns:200,minAcc:70,shares:'50,30,20',fix:'30,20,10',minPayers:5,groupMode:'all',pts:10,refPct:10,refDisc:10,minWd:20,admin:'admin123',
-  cards:{milli:'',alif:'',dc:'9762 0001 2075 8775',eskhata:'',humo:'',visa:''},cardPhones:{},holder:'Исм Фамилия',dcTpl:''},
+  cards:{milli:'',alif:'',dc:'9762 0001 2075 8775',eskhata:'',humo:'',visa:''},cardPhones:{},holder:'Исм Фамилия',dcTpl:'',payCards:[{b:'dc',n:'Корти Миллӣ · Dushanbe City',num:'9762 0001 2075 8775'},{b:'humo',n:'Ҳумо Visa',num:'4890 8400 2643 6661'},{b:'dc',n:'Dushanbe City Visa',num:'4713 3800 1620 8346'},{b:'alif',n:'Alif Visa',num:'4444 8888 1531 1216'}],payPhone:'+992939911199',payPhoneBanks:'Alif · DC · Ҳумо'},
  ui:{theme:'night'},sess:null};
 const SKEY='bilimdon_tj_v2';
 function load(){try{const r=localStorage.getItem(SKEY);if(r){const d=Object.assign(JSON.parse(JSON.stringify(DEF)),JSON.parse(r));d.ui=d.ui||{theme:'night'};if(!['night','emerald','light'].includes(d.ui.theme))d.ui.theme='night';d.questions=STATIC.concat((d.questions||[]).filter(q=>String(q.id).startsWith('n')).map(q=>Object.assign({g1:1,g2:11},q)));return d}}catch(e){}return JSON.parse(JSON.stringify(DEF))}
@@ -1659,8 +1681,6 @@ function vPlans(){const u=me();const P=DB.settings.plans;if(CO.plan>=P.length)CO
   <div style="text-align:right">${dc?`<div class="strike num">${money(P[0].price*p.m)}</div>`:''}<b class="num" style="font-size:16px">${money(p.price)}</b></div></div>`}).join('')}
  <div class="card mt"><label style="margin-top:0">Промокод</label><div class="row"><input id="pc" placeholder="МАКТАБ10" value="${CO.promo?CO.promo.code:''}"><button class="btn s" onclick="applyPromo()">Қўллаш</button></div>
   ${CO.promo?`<div class="sm row" style="color:var(--ok);margin-top:10px;gap:6px">${I('check',16,2.4)}${CO.promo.code}: −${CO.promo.pct}%</div>`:''}${refD?`<div class="sm row" style="color:var(--ok);margin-top:8px;gap:6px">${I('gift',16)}Дўст таклифи: −${refD}% (биринчи тўлов)</div>`:''}</div>
- <div class="sec-h"><h2>Тўлов усули</h2></div>
- <div class="pm">${payMethods().map(m=>`<button class="pmb ${CO.method===m.id?'on':''}" onclick="CO.method='${m.id}';render()"><span class="lg" style="background:${m.c}">${m.lg}</span>${m.n}</button>`).join('')}</div>
  <div class="card mt lst"><div class="it"><span class="mut" style="flex:1">Тариф</span><b>${pl.m} ой</b></div><div class="it"><span class="mut" style="flex:1">Нарх</span><span class="num">${money(pl.price)}</span></div>
   ${d?`<div class="it"><span class="mut" style="flex:1">Чегирма</span><span style="color:var(--ok)">−${d}%</span></div>`:''}<div class="it"><span style="flex:1;font-weight:700">Жами</span><b class="num" style="font-size:20px">${money(total)}</b></div></div>
  <div style="height:14px"></div><button class="btn" onclick="checkout(${total})">Тўлаш · ${money(total)}</button>
@@ -2167,6 +2187,7 @@ function supportSheet(){const n=supNum();sheet(`<div class="center"><div style="
 
 
 
+
 /* ============ номли амаллар (сервер билан ишлаш учун) ============ */
 function adminLogin(){if($('ap').value===DB.settings.admin){DB.sess='ADMIN';save();closeSheet();go('admin')}else toast('Парол нотўғри','lock')}
 function toggleSnd(){const u=me();u.snd=u.snd===false;save();render()}
@@ -2216,6 +2237,44 @@ async function submitPay2(){const P=CO.pay;if(!P)return;const u=me();if(DB.payme
  CO.promo=null;CO.pay=null;save();sheet(`<div class="center"><span class="ico l mx pop" style="background:var(--warns);color:var(--warn);width:68px;height:68px;border-radius:22px;margin-bottom:14px">${I('hour',30)}</span><h2>Тўлов юборилди</h2><p class="mut sm" style="line-height:1.5">Тўлов коди: <b class="num" style="color:var(--ink)">${P.ref}</b> · ${amtTxt(P.amt)} ${CUR}<br>Пул тушгани текширилгач обунангиз фаоллашади.</p><button class="btn" onclick="closeSheet();go('home')">Тушунарли</button></div>`)}
 const _vASetDC=vASet;vASet=function(){return _vASetDC().replace(/(<input id="cp_dc"[^>]*>)/,'$1<label>Тўлов ҳаволаси (DC Next\'дан)</label><input id="dctpl" placeholder="https://pay.dc.tj/?a=…" value="'+esc(DB.settings.dcTpl||'')+'"><div class="xs mut" style="margin-top:4px;line-height:1.4">Сумма ва тўлов коди ўзи қўйилади. Бўш бўлса — карта рақамидан ясалади</div><input id="dcf1" type="hidden" value="'+esc(DB.settings.dcF1||'133')+'">')};
 const _saveSetDC=saveSet;saveSet=function(){const e=$('dcf1');if(e){const v=e.value.replace(/\D/g,'');DB.settings.dcF1=v||'133'}const t=$('dctpl');if(t){const v=t.value.trim();DB.settings.dcTpl=PAYRE.test(v)?v:''}return _saveSetDC.apply(this,arguments)};
+
+/* ============ ТЎЛОВ: карталар рўйхати + телефон (битта ойнада) ============ */
+const BANKS={dc:{n:'Dushanbe City',lg:'DC',c:'#D7141A',pkg:'tj.dc.next1'},alif:{n:'Alif',lg:'alif',c:'#00A651',pkg:'tj.alif.mobi'},humo:{n:'Ҳумо',lg:'HUMO',c:'#283593'},milli:{n:'Корти Миллӣ',lg:'КМ',c:'#0A7D3B'},eskhata:{n:'Эсхата',lg:'ЭСХ',c:'#0B4EA2'},other:{n:'Бошқа',lg:'💳',c:'#475569'}};
+const inWV=()=>/; wv\)/.test(navigator.userAgent);
+function openUrl(u){if(inWV())location.href=u;else window.open(u,'_blank','noopener')}
+function openBank(b){const B=BANKS[b];if(B&&B.pkg)openUrl('market://launch?id='+B.pkg)}
+function payTap(i){const P=CO.pay;if(!P)return;const c=(DB.settings.payCards||[])[i];if(!c)return;const num=String(c.num).replace(/\s/g,'');copy(num);
+ if(c.b==='dc'){setTimeout(()=>openUrl(dcLink(num,P.amt,P.ref)),350)}else if(BANKS[c.b]&&BANKS[c.b].pkg){toast(X('Карта рақами нусхаланди — банк иловаси очилмоқда','Рақами корт нусхабардорӣ шуд — барномаи бонк кушода мешавад','Номер карты скопирован — открывается приложение банка'),'copy');setTimeout(()=>openBank(c.b),700)}}
+function phoneTap(b){const ph=DB.settings.payPhone;if(!ph)return;copy(ph);if(b){toast(X('Рақам нусхаланди — банк иловаси очилмоқда','Рақам нусхабардорӣ шуд — барномаи бонк кушода мешавад','Номер скопирован — открывается приложение банка'),'copy');setTimeout(()=>openBank(b),700)}}
+checkout=function(total){CO.method='dc';
+ if(!CO.pay||CO.pay.base!==total||CO.pay.plan!==CO.plan){CO.pay={base:total,method:'dc',plan:CO.plan,amt:uniqAmt(total),ref:(CO.pay&&CO.pay.ref)||payRef()};save()}
+ const P=CO.pay,S=DB.settings,L=S.payCards||[];const lg=b=>{const B=BANKS[b]||BANKS.other;return `<span class="plg" style="background:${B.c}">${B.lg}</span>`};
+ sheet(`<div class="row sb" style="align-items:flex-end;margin-bottom:12px"><div><div class="xs mut">Ўтказиладиган сумма</div><div class="num" style="font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.1">${amtTxt(P.amt)} <span style="font-size:15px">${CUR}</span></div></div>
+  <div style="text-align:right"><div class="xs mut">Тўлов коди</div><button class="pcode num" onclick="copy('${P.ref}')">${P.ref} ${I('copy',14)}</button></div></div>
+ <div class="xs" style="color:var(--warn);font-weight:700;line-height:1.45">Айнан шу суммани юборинг — дирамигача, изоҳга кодни ёзинг</div>
+ <h3 class="pst">1. Пулни шу карталардан бирига ўтказинг</h3>
+ <div class="plist">${L.map((c,i)=>`<button class="prow" onclick="payTap(${i})">${lg(c.b)}<span class="pnm"><span class="xs mut">${esc(c.n)}</span><b class="num">${esc(c.num)}</b></span><span class="pgo">${c.b==='dc'?I('send',16):I('copy',16)}</span></button>`).join('')}
+ ${S.payPhone?`<div class="prow ph"><span class="plg" style="background:var(--pri)">${I('phone',14)}</span><span class="pnm"><span class="xs mut">Телефон рақамига · ${esc(S.payPhoneBanks||'')}</span><b class="num">${esc(fmtPh(S.payPhone)||S.payPhone)}</b></span><button class="pgo" onclick="phoneTap()">${I('copy',16)}</button></div>
+  <div class="row" style="gap:8px;margin-top:8px"><button class="btn s sec" style="flex:1" onclick="phoneTap('dc')">DC Next</button><button class="btn s sec" style="flex:1" onclick="phoneTap('alif')">Alif</button></div>`:''}</div>
+ <div class="xs mut" style="margin-top:8px;line-height:1.45">Карта устига босинг — рақам нусхаланади ва банк иловаси очилади. Dushanbe City'да сумма ва код ўзи ёзилади</div>
+ <h3 class="pst">2. Тўлагандан кейин</h3>
+ <label style="margin-top:0">Чек скриншоти (ихтиёрий)</label><input id="tf" type="file" accept="image/*">
+ <div style="height:12px"></div><button class="btn okb" onclick="submitPay2()">${I('check',18,2.4)}Тўладим</button>
+ ${S.holder&&S.holder!=='Исм Фамилия'?`<div class="xs mut center" style="margin-top:8px">Қабул қилувчи: ${esc(S.holder)}</div>`:''}`)};
+/* админ: карталар рўйхатини таҳрирлаш */
+function payCardsEditor(){const S=DB.settings,L=S.payCards||[];const opts=v=>Object.entries(BANKS).map(([k,B])=>`<option value="${k}" ${v===k?'selected':''}>${B.n}</option>`).join('');
+ return `<div class="card mb"><h2>Тўлов учун карталар</h2><p class="xs mut" style="line-height:1.4">Ўқувчи тўлаганда шу рўйхат чиқади. Dushanbe City картасини босса — сумма ва код билан DC иловаси очилади</p>
+ <div id="pcl">${L.map((c,i)=>`<div class="pced"><select id="pb_${i}">${opts(c.b)}</select><input id="pn_${i}" value="${esc(c.n)}" placeholder="Номи (масалан: Ҳумо Visa)"><div class="row" style="gap:6px"><input id="pm_${i}" inputmode="numeric" value="${esc(c.num)}" placeholder="0000 0000 0000 0000"><button class="pill ic" onclick="payCardDel(${i})">${I('trash',15)}</button></div></div>`).join('')}</div>
+ <button class="btn s sec" style="margin-top:10px" onclick="payCardAdd()">${I('plus',16)}Карта қўшиш</button>
+ <label>Телефон рақами (ўтказма учун)</label><input id="pph" type="tel" value="${esc(fmtPh(S.payPhone)||'')}" placeholder="+992 __ ___ __ __">
+ <label>Шу рақам уланган банклар</label><input id="pphb" value="${esc(S.payPhoneBanks||'')}" placeholder="Alif · DC · Ҳумо"></div>`}
+function readPayCards(){const S=DB.settings;const L=[];let i=0;while($('pb_'+i)){const num=$('pm_'+i).value.trim();if(num.replace(/\D/g,'').length>=9)L.push({b:$('pb_'+i).value,n:$('pn_'+i).value.trim()||(BANKS[$('pb_'+i).value]||{}).n||'',num});i++}
+ S.payCards=L;const ph=$('pph');if(ph){S.payPhone=normPh(ph.value)||'';S.payPhoneBanks=$('pphb').value.trim()}}
+function payCardAdd(){readPayCards();DB.settings.payCards.push({b:'dc',n:'',num:''});render()}
+function payCardDel(i){readPayCards();DB.settings.payCards.splice(i,1);render()}
+const _vASetPC=vASet;vASet=function(){const h=_vASetPC();const k=h.indexOf('<div class="card mb"><h2>Пул қабул қилувчи карталар</h2>');return k<0?h:h.slice(0,k)+payCardsEditor()+h.slice(k)};
+const _saveSetPC=saveSet;saveSet=function(){if($('pb_0')||$('pph'))readPayCards();return _saveSetPC.apply(this,arguments)};
+
 
 /* ============ 3 ТИЛ: танлаш ============ */
 DB.ui=DB.ui||{};if(!DB.ui.lang)DB.ui.lang=LANG;
