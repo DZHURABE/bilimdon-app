@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Серверингиз манзили. Масалан: https://bilimdon.tj  (сервер тайёр бўлгач ёзинг)
-         Бўш қолдирилса, илова демо режимда (телефон ичидаги нусха) очилади. -->
+    <!-- Серверингиз (VPS) манзили. Масалан: https://bilimdon.tj
+         Бўш бўлса, илова ўзи ичидаги нусхадан ишлайди ва update_url'дан ўзи янгиланади. -->
     <string name="server_url" translatable="false"></string>
+    <!-- Илова ҳар очилганда шу ердан янги версияни текширади (GitHub). -->
+    <string name="update_url" translatable="false">https://raw.githubusercontent.com/DZHURABE/bilimdon-app/main/app/src/main/assets/index.html</string>
 </resources>
