@@ -912,6 +912,7 @@ const I18N={
 'Ҳумо':['Ҳумо','Хумо'],
 'ҳал':['ҳал','решено'],
 /* қўшимча (рендерда учрайдиган) */
+'Ҳавола очилмаса — шу карта ёки телефон рақамига ўтказинг ва изоҳга':['Агар ҳавола кушода нашавад — ба ҳамин корт ё рақами телефон гузаронед ва дар шарҳ','Если ссылка не открылась — переведите на эту карту или номер телефона и укажите в комментарии код'],
 'Тугмани босинг — карта, сумма ва код ўзи ёзилади':['Тугмаро пахш кунед — корт, маблағ ва рамз худкор пур мешаванд','Нажмите кнопку — карта, сумма и код заполнятся сами'],
 'Айнан шу суммани юборинг — дирамигача':['Маҳз ҳамин маблағро фиристед — то дирам','Отправьте ровно эту сумму — до дирама'],
 'Дирамлар тўловингизни бошқалардан ажратади':['Дирамҳо пардохти шуморо аз дигарон фарқ мекунанд','Дирамы отличают ваш платёж от других'],
@@ -2178,7 +2179,10 @@ checkout=function(total){const m=METHODS.find(x=>x.id===CO.method);const card=DB
   <div class="row sb" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line2)"><div><div class="xs mut">Тўлов коди</div><b class="num" style="font-size:18px">${P.ref}</b></div><button class="btn s sec" onclick="copy('${P.ref}')">${I('copy',15)}Нусха</button></div>
  </div>
  ${isDC?`<button class="btn mt" style="background:#D7141A;color:#fff" onclick="openPay()">${I('send',18)}Dushanbe City'да тўлаш</button>
-  <div class="lst mt">${step(1,'Тугмани босинг — Dushanbe City очилади, карта, сумма ва код ўзи ёзилган бўлади')}${step(2,'Тўловни тасдиқланг')}${step(3,'Иловага қайтиб «Тўладим» тугмасини босинг')}</div>`
+  <div class="lst mt">${step(1,'Тугмани босинг — Dushanbe City очилади, карта, сумма ва код ўзи ёзилган бўлади')}${step(2,'Тўловни тасдиқланг')}${step(3,'Иловага қайтиб «Тўладим» тугмасини босинг')}</div>
+  <div class="xs mut" style="margin-top:12px;line-height:1.45">Ҳавола очилмаса — шу карта ёки телефон рақамига ўтказинг ва изоҳга <b class="num">${P.ref}</b> кодини ёзинг:</div>
+  ${card?`<div class="copy mt" style="font-size:15px"><span class="row" style="gap:8px;white-space:nowrap">${I('card',16)}<span class="num">${esc(card)}</span></span><button class="btn s sec" onclick="copy('${esc(card).replace(/\s/g,'')}')">${I('copy',15)}Нусха</button></div>`:''}
+  ${ph?`<div class="copy mt" style="font-size:15px"><span class="row" style="gap:8px">${I('phone',16)}<span class="num">${esc(fmtPh(ph))}</span></span><button class="btn s sec" onclick="copy('${esc(ph)}')">${I('copy',15)}Нусха</button></div>`:''}`
  :`<div class="lst mt">${step(1,`${m.n} иловасини очинг`)}${step(2,`Қуйидаги ${CO.method==='alif'?'рақамга':'картага'} аниқ ${amtTxt(P.amt)} ${CUR} ўтказинг`)}${step(3,`Изоҳ (комментарий)га ${P.ref} кодини ёзинг`)}${step(4,'Иловага қайтиб «Тўладим» тугмасини босинг')}</div>
   <div class="copy mt"><span class="num">${esc(card)}</span><button class="btn s sec" onclick="copy('${esc(card).replace(/\s/g,'')}')">${I('copy',15)}Нусха</button></div>
   ${ph?`<div class="copy mt" style="font-size:15px"><span class="row" style="gap:8px">${I('phone',16)}<span class="num">${esc(fmtPh(ph))}</span></span><button class="btn s sec" onclick="copy('${esc(ph)}')">${I('copy',15)}Нусха</button></div>`:''}`}
