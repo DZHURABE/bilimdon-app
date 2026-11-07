@@ -912,6 +912,9 @@ const I18N={
 'Ҳумо':['Ҳумо','Хумо'],
 'ҳал':['ҳал','решено'],
 /* қўшимча (рендерда учрайдиган) */
+'Dushanbe City ҳаволаси (телефон рақамига ўтказма учун':['Ҳаволаи Душанбе Сити (барои интиқол ба рақами телефон','Ссылка Dushanbe City (для перевода на номер телефона'],
+'DC Next иловасидан олинган тўлов ҳаволасини шу ерга қўйинг — сумма ва код ўзи алмаштирилади. Бўш бўлса, карта рақами ишлатилади':['Ҳаволаи пардохтро аз DC Next ин ҷо гузоред — маблағ ва рамз худкор иваз мешаванд. Агар холӣ бошад, рақами корт истифода мешавад','Вставьте ссылку на оплату из DC Next — сумма и код подставятся сами. Если пусто, используется номер карты'],
+'Хизмат коди (f1, карта учун':['Рамзи хизмат (f1, барои корт','Код услуги (f1, для карты'],
 'Ҳавола очилмаса — шу карта ёки телефон рақамига ўтказинг ва изоҳга':['Агар ҳавола кушода нашавад — ба ҳамин корт ё рақами телефон гузаронед ва дар шарҳ','Если ссылка не открылась — переведите на эту карту или номер телефона и укажите в комментарии код'],
 'Тугмани босинг — карта, сумма ва код ўзи ёзилади':['Тугмаро пахш кунед — корт, маблағ ва рамз худкор пур мешаванд','Нажмите кнопку — карта, сумма и код заполнятся сами'],
 'Айнан шу суммани юборинг — дирамигача':['Маҳз ҳамин маблағро фиристед — то дирам','Отправьте ровно эту сумму — до дирама'],
@@ -2163,7 +2166,9 @@ function adminRead(uid){const c=chatOf(uid);if(c.ua){c.ua=0;save()}}
 DB.settings.dcF1=DB.settings.dcF1||'133';
 function payRef(){const n=(DB.settings.paySeq||100)+1;DB.settings.paySeq=n;return 'BD'+n}
 function uniqAmt(total){const used=new Set(DB.payments.filter(p=>p.status==='pending').map(p=>Math.round(p.amount*100)));for(let k=0;k<300;k++){const c=Math.round(total*100)+R(1,99);if(!used.has(c))return c/100}return total}
-function dcLink(card,amt,ref){return `https://pay.dc.tj/?a=${String(card).replace(/\D/g,'')}&f1=${encodeURIComponent(DB.settings.dcF1||'133')}&c=${encodeURIComponent(ref)}&s=${amt.toFixed(2)}`}
+function dcLink(card,amt,ref){const tpl=(DB.settings.dcTpl||'').trim();
+ if(/^https:\/\/pay\.dc\.tj\//.test(tpl)){try{const u=new URL(tpl);u.searchParams.set('s',amt.toFixed(2));u.searchParams.set('c',ref);return u.toString()}catch(e){}}
+ return `https://pay.dc.tj/?a=${String(card).replace(/\D/g,'')}&f1=${encodeURIComponent(DB.settings.dcF1||'133')}&c=${encodeURIComponent(ref)}&s=${amt.toFixed(2)}`}
 function openPay(){const P=CO.pay;if(!P)return;const url=dcLink(DB.settings.cards.dc||'',P.amt,P.ref);if(/; wv\)/.test(navigator.userAgent))location.href=url;else window.open(url,'_blank','noopener')}
 const amtTxt=a=>a.toFixed(2).replace('.',',');
 checkout=function(total){const m=METHODS.find(x=>x.id===CO.method);const card=DB.settings.cards[CO.method]||'';
@@ -2193,8 +2198,8 @@ async function submitPay2(){const P=CO.pay;if(!P)return;const u=me();if(DB.payme
  const f=$('tf');const proof=f&&f.files[0]?await shrink(f.files[0]):null;const pl=DB.settings.plans[P.plan];
  DB.payments.unshift({id:'p'+Date.now(),ref:P.ref,uid:u.id,g:gradeOf(u),months:pl.m,amount:P.amt,base:P.base,method:P.method,tx:'',proof,status:'pending',date:new Date().toISOString(),promo:CO.promo?CO.promo.code:null});
  CO.promo=null;CO.pay=null;save();sheet(`<div class="center"><span class="ico l mx pop" style="background:var(--warns);color:var(--warn);width:68px;height:68px;border-radius:22px;margin-bottom:14px">${I('hour',30)}</span><h2>Тўлов юборилди</h2><p class="mut sm" style="line-height:1.5">Тўлов коди: <b class="num" style="color:var(--ink)">${P.ref}</b> · ${amtTxt(P.amt)} ${CUR}<br>Пул тушгани текширилгач обунангиз фаоллашади.</p><button class="btn" onclick="closeSheet();go('home')">Тушунарли</button></div>`)}
-const _vASetDC=vASet;vASet=function(){return _vASetDC().replace(/(<input id="cp_dc"[^>]*>)/,'$1<label>Dushanbe City ҳаволаси: хизмат коди (f1)</label><input id="dcf1" inputmode="numeric" value="'+esc(DB.settings.dcF1||'133')+'"><div class="xs mut" style="margin-top:4px">Ўқувчи тугмани босганда шу карта, сумма ва тўлов коди билан Dushanbe City очилади</div>')};
-const _saveSetDC=saveSet;saveSet=function(){const e=$('dcf1');if(e){const v=e.value.replace(/\D/g,'');DB.settings.dcF1=v||'133'}return _saveSetDC.apply(this,arguments)};
+const _vASetDC=vASet;vASet=function(){return _vASetDC().replace(/(<input id="cp_dc"[^>]*>)/,'$1<label>Dushanbe City ҳаволаси (телефон рақамига ўтказма учун)</label><input id="dctpl" placeholder="https://pay.dc.tj/?..." value="'+esc(DB.settings.dcTpl||'')+'"><div class="xs mut" style="margin-top:4px">DC Next иловасидан олинган тўлов ҳаволасини шу ерга қўйинг — сумма ва код ўзи алмаштирилади. Бўш бўлса, карта рақами ишлатилади</div><label>Хизмат коди (f1, карта учун)</label><input id="dcf1" inputmode="numeric" value="'+esc(DB.settings.dcF1||'133')+'"><div class="xs mut" style="margin-top:4px">Ўқувчи тугмани босганда шу карта, сумма ва тўлов коди билан Dushanbe City очилади</div>')};
+const _saveSetDC=saveSet;saveSet=function(){const e=$('dcf1');if(e){const v=e.value.replace(/\D/g,'');DB.settings.dcF1=v||'133'}const t=$('dctpl');if(t){const v=t.value.trim();DB.settings.dcTpl=/^https:\/\/pay\.dc\.tj\//.test(v)?v:''}return _saveSetDC.apply(this,arguments)};
 
 /* ============ 3 ТИЛ: танлаш ============ */
 DB.ui=DB.ui||{};if(!DB.ui.lang)DB.ui.lang=LANG;
