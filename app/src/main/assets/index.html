@@ -387,6 +387,16 @@ html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
 .pcode{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:18px;padding:6px 10px;border-radius:10px;background:var(--sf2);color:var(--ink)}
 .pced{display:flex;flex-direction:column;gap:6px;margin-top:10px;padding:10px;border-radius:14px;background:var(--card2)}
 .pced input,.pced select{margin:0}
+.asec{margin-bottom:10px;border-radius:18px;background:var(--card);border:1px solid var(--line2)}
+.asec summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer}
+.asec summary::-webkit-details-marker{display:none}
+.asec .pnm b{font-size:15px}
+.asi{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--pris);color:var(--pri);flex:none}
+.asb{padding:0 14px 14px;border-top:1px solid var(--line2)}
+.asb>label:first-child,.asb>.g2:first-child label{margin-top:12px}
+.asec[open] .pchv{transform:rotate(-90deg)}
+.assave{position:fixed;left:0;right:0;bottom:84px;padding:0 16px;max-width:560px;margin:0 auto;z-index:5}
+.assave .btn{box-shadow:0 10px 30px rgba(0,0,0,.35)}
 </style>
 </head>
 <body>
@@ -929,6 +939,22 @@ const I18N={
 'Ҳумо':['Ҳумо','Хумо'],
 'ҳал':['ҳал','решено'],
 /* қўшимча (рендерда учрайдиган) */
+'Тўлов карталари':['Кортҳои пардохт','Карты для оплаты'],
+'та карта':['корт','карт'],
+'Мукофот ва рейтинг':['Мукофот ва рейтинг','Призы и рейтинг'],
+'Дўстлар ва пул чиқариш':['Дӯстон ва баровардани пул','Друзья и вывод денег'],
+'Техник ёрдам':['Дастгирии техникӣ','Техподдержка'],
+'Уланган банклар':['Бонкҳои пайваст','Привязанные банки'],
+'Номи':['Ном','Название'],
+'Улуш %, 1-2-3-ўрин':['Ҳисса %, ҷойҳои 1-2-3','Доли %, 1-2-3 места'],
+'Кафолат, сомонӣ':['Кафолат, сомонӣ','Гарантия, сомони'],
+'Ҳамма битта рейтингда':['Ҳама дар як рейтинг','Все в одном рейтинге'],
+'Ҳар ўринга фоиз ёки кафолатдан каттаси берилади':['Ба ҳар ҷой аз фоиз ё кафолат калонтараш дода мешавад','Каждому месту — большее из процента и гарантии'],
+'Таклиф қилганга %':['Ба даъваткунанда %','Пригласившему %'],
+'Дўстга чегирма %':['Тахфиф ба дӯст %','Скидка другу %'],
+'Минимал чиқариш, сомонӣ':['Ҳадди ақали баровардан, сомонӣ','Минимальный вывод, сомони'],
+'WhatsApp ва қўнғироқ рақами':['Рақами WhatsApp ва занг','Номер WhatsApp и звонков'],
+'Жамғарма':['Фонд','Фонд'],
 'Айнан шу суммани юборинг — дирамигача, изоҳга кодни ёзинг':['Маҳз ҳамин маблағро фиристед — то дирам, дар шарҳ рамзро нависед','Отправьте ровно эту сумму — до дирама, в комментарии укажите код'],
 '1. Пулни шу карталардан бирига ўтказинг':['1. Пулро ба яке аз ин кортҳо гузаронед','1. Переведите деньги на одну из карт'],
 'Телефон рақамига':['Ба рақами телефон','На номер телефона'],
@@ -2275,6 +2301,47 @@ function payCardDel(i){readPayCards();DB.settings.payCards.splice(i,1);render()}
 const _vASetPC=vASet;vASet=function(){const h=_vASetPC();const k=h.indexOf('<div class="card mb"><h2>Пул қабул қилувчи карталар</h2>');return k<0?h:h.slice(0,k)+payCardsEditor()+h.slice(k)};
 const _saveSetPC=saveSet;saveSet=function(){if($('pb_0')||$('pph'))readPayCards();return _saveSetPC.apply(this,arguments)};
 
+
+
+/* ============ АДМИН → ТАНЗИМ (тартибли, ихчам) ============ */
+const ASO=new Set(['pay']);
+function asSec(id,ic,title,sum,body){return `<details class="asec" ${ASO.has(id)?'open':''} ontoggle="this.open?ASO.add('${id}'):ASO.delete('${id}')"><summary><span class="asi">${I(ic,18)}</span><span class="pnm"><b>${title}</b><span class="xs mut">${sum}</span></span><span class="pchv">${I('right',16)}</span></summary><div class="asb">${body}</div></details>`}
+const fld=(id,label,val,extra)=>`<div><label>${label}</label><input id="${id}" value="${esc(String(val??''))}" ${extra||''}></div>`;
+vASet=function(){const S=DB.settings,L=S.payCards||[];const opts=v=>Object.entries(BANKS).map(([k,B])=>`<option value="${k}" ${v===k?'selected':''}>${k==='other'?B.n:B.lg}</option>`).join('');
+ const pay=`${L.map((c,i)=>`<div class="pced"><div class="row" style="gap:6px"><select id="pb_${i}" style="width:96px;flex:none">${opts(c.b)}</select><input id="pn_${i}" value="${esc(c.n)}" placeholder="Номи"></div><div class="row" style="gap:6px"><input id="pm_${i}" inputmode="numeric" value="${esc(c.num)}" placeholder="0000 0000 0000 0000"><button class="pill ic" onclick="payCardDel(${i})">${I('trash',15)}</button></div></div>`).join('')}
+  <button class="btn s sec" style="margin-top:10px;width:100%" onclick="payCardAdd()">${I('plus',16)}Карта қўшиш</button>
+  <div class="g2">${fld('pph','Телефон рақами',fmtPh(S.payPhone)||'','type="tel" placeholder="+992 __ ___ __ __"')}${fld('pphb','Уланган банклар',S.payPhoneBanks,'placeholder="Alif · DC · Ҳумо"')}</div>
+  ${fld('hd','Карта эгаси (исм фамилия)',S.holder==='Исм Фамилия'?'':S.holder,'placeholder="Исм Фамилия"')}`;
+ const plans=`<div class="g2">${S.plans.map((p,i)=>`<div><label>${p.m} ой${discountOf(p)?` · −${discountOf(p)}%`:''}</label><input id="pp${i}" type="number" inputmode="numeric" value="${p.price}"></div>`).join('')}</div>`;
+ const prize=`<div class="g2">${fld('s1','Жамғарма %',S.poolPct,'type="number"')}${fld('s3','1 жавоб балли',S.pts,'type="number"')}${fld('s2','Ойда мин. жавоб',S.minAns,'type="number"')}${fld('s7','Мин. аниқлик %',S.minAcc,'type="number"')}</div>
+  <div class="g2">${fld('s8','Улуш %, 1-2-3-ўрин',S.shares)}${fld('s9','Кафолат, сомонӣ',S.fix)}</div>
+  ${fld('s10','Кафолат нечта обуначидан бошланади',S.minPayers,'type="number"')}
+  <label>Рейтинг гуруҳлари</label><select id="s11"><option value="all" ${S.groupMode==='all'?'selected':''}>Ҳамма битта рейтингда</option><option value="g3" ${S.groupMode==='g3'?'selected':''}>3 гуруҳ: 1–4, 5–8, 9–11-синф</option><option value="class" ${S.groupMode==='class'?'selected':''}>Ҳар синф алоҳида</option></select>
+  <div class="xs mut" style="margin-top:8px;line-height:1.4">Ҳар ўринга фоиз ёки кафолатдан каттаси берилади</div>`;
+ const ref=`<div class="g2">${fld('s5','Таклиф қилганга %',S.refPct,'type="number"')}${fld('s6','Дўстга чегирма %',S.refDisc,'type="number"')}</div>${fld('s4','Минимал чиқариш, сомонӣ',S.minWd,'type="number"')}`;
+ const promo=`<div class="lst">${DB.promos.map((p,i)=>`<div class="it"><span class="row" style="flex:1">${I('tag',16)}<b>${esc(p.code)}</b></span><span class="tag t-ok">−${p.pct}%</span><button class="pill ic" onclick="delPromo(${i})">${I('trash',15)}</button></div>`).join('')||'<div class="xs mut">—</div>'}</div>
+  <div class="row" style="margin-top:10px;gap:6px"><input id="nc" placeholder="КОД"><input id="np" type="number" placeholder="%" style="width:76px"><button class="btn s" onclick="addPromo()">${I('plus',16)}</button></div>`;
+ const sup=`${fld('sup','WhatsApp ва қўнғироқ рақами',fmtPh(supNum()),'type="tel"')}`;
+ const pw=`<label>Янги парол</label><input id="apw" type="password" placeholder="Камида 4 белги">`;
+ return `<div class="bar-top"><h1 style="margin:0">Созламалар</h1></div><div class="pad page" style="padding-bottom:150px">
+ ${asSec('pay','card','Тўлов карталари',`${L.length} та карта${S.payPhone?' · '+esc(fmtPh(S.payPhone)):''}`,pay)}
+ ${asSec('plans','tag','Тарифлар',S.plans.map(p=>p.price).join(' · ')+' '+CUR,plans)}
+ ${asSec('prize','trophy','Мукофот ва рейтинг',`Жамғарма ${S.poolPct}% · ${esc(S.shares)}`,prize)}
+ ${asSec('ref','users','Дўстлар ва пул чиқариш',`${S.refPct}% · −${S.refDisc}% · мин. ${S.minWd} ${CUR}`,ref)}
+ ${asSec('promo','gift','Промокодлар',`${DB.promos.map(p=>esc(p.code)).join(', ')||'—'}`,promo)}
+ ${asSec('sup','phone','Техник ёрдам',esc(fmtPh(supNum())),sup)}
+ ${asSec('pw','lock','Админ пароли','••••',pw)}
+ <div class="assave"><button class="btn" onclick="saveSet()">${I('check',18,2.4)}Ҳаммасини сақлаш</button></div></div>`};
+saveSet=function(){const S=DB.settings,v=id=>{const e=$(id);return e?e.value:null},n=(id,d)=>{const x=v(id);return x===null||x===''||isNaN(+x)?d:+x};
+ S.plans.forEach((p,i)=>p.price=Math.max(1,n('pp'+i,p.price)));
+ S.poolPct=Math.min(100,Math.max(0,n('s1',S.poolPct)));S.pts=Math.max(1,n('s3',S.pts));S.minAns=Math.max(1,n('s2',S.minAns));S.minAcc=Math.min(100,Math.max(0,n('s7',S.minAcc)));
+ if(v('s8')!==null)S.shares=v('s8').split(',').map(x=>Math.max(0,+x||0)).filter(x=>x>0).join(',')||'50,30,20';if(v('s9')!==null)S.fix=v('s9').split(',').map(x=>Math.max(0,+x||0)).join(',');
+ S.minPayers=Math.max(1,n('s10',S.minPayers));if(v('s11'))S.groupMode=v('s11');S.refPct=Math.min(50,Math.max(0,n('s5',S.refPct)));S.refDisc=Math.min(50,Math.max(0,n('s6',S.refDisc)));S.minWd=Math.max(0,n('s4',S.minWd));
+ if($('pb_0')||$('pph')){const raw=(v('pph')||'').trim();if(raw&&raw!=='+992'&&!normPh(raw))return toast('Телефон рақамни тўлиқ киритинг','info');readPayCards()}
+ if(v('hd')!==null)S.holder=v('hd').trim()||'Исм Фамилия';
+ if(v('sup')!==null){const sp=normPh(v('sup'));if(!sp)return toast('Техник ёрдам рақами нотўғри','info');S.support=sp}
+ const pw=v('apw');if(pw&&pw.length>=4)S.admin=pw;else if(pw)return toast('Парол камида 4 белги','info');
+ save();toast('Сақланди','check');render()};
 
 /* ============ 3 ТИЛ: танлаш ============ */
 DB.ui=DB.ui||{};if(!DB.ui.lang)DB.ui.lang=LANG;
