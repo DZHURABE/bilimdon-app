@@ -1463,11 +1463,11 @@ const DEF={users:[],questions:STATIC,payments:[],withdrawals:[],prizes:[],closed
  promos:[{code:'МАКТАБ10',pct:10},{code:'BILIM20',pct:20}],
  settings:{plans:[{m:1,price:39},{m:2,price:72},{m:3,price:99},{m:6,price:179},{m:12,price:299}],
   poolPct:40,minPts:100,minAns:200,minAcc:70,shares:'50,30,20',fix:'30,20,10',minPayers:5,groupMode:'all',pts:10,refPct:10,refDisc:10,minWd:20,admin:'admin123',
-  cards:{milli:'',alif:'',dc:'9762 0001 2075 8775',eskhata:'',humo:'',visa:''},cardPhones:{},holder:'Исм Фамилия',dcTpl:'http://pay.expresspay.tj/?A=9762000120758775&s=&c=&f1=133&FIELD2=&FIELD3='},
+  cards:{milli:'',alif:'',dc:'9762 0001 2075 8775',eskhata:'',humo:'',visa:''},cardPhones:{},holder:'Исм Фамилия',dcTpl:''},
  ui:{theme:'night'},sess:null};
 const SKEY='bilimdon_tj_v2';
 function load(){try{const r=localStorage.getItem(SKEY);if(r){const d=Object.assign(JSON.parse(JSON.stringify(DEF)),JSON.parse(r));d.ui=d.ui||{theme:'night'};if(!['night','emerald','light'].includes(d.ui.theme))d.ui.theme='night';d.questions=STATIC.concat((d.questions||[]).filter(q=>String(q.id).startsWith('n')).map(q=>Object.assign({g1:1,g2:11},q)));return d}}catch(e){}return JSON.parse(JSON.stringify(DEF))}
-let DB=load();(function(){const d=JSON.parse(JSON.stringify(DEF));for(const k in d.settings)if(DB.settings[k]===undefined)DB.settings[k]=d.settings[k];if(!DB.certs)DB.certs=[];if(!DB.settings.cardPhones)DB.settings.cardPhones={};if(DB.settings.shares==='30,20,14,10,8,6,4,3,3,2')DB.settings.shares='50,30,20';{const C=DB.settings.cards||{},OLD={milli:'9762 0000 0000 0000',alif:'+992 900 00 00 00',dc:'4444 0000 0000 0000',eskhata:'4000 0000 0000 0000',humo:'9860 0000 0000 0000',visa:'4111 0000 0000 0000'};for(const k in OLD)if(C[k]===OLD[k])C[k]=k==='dc'?'9762 0001 2075 8775':''}})();
+let DB=load();(function(){const d=JSON.parse(JSON.stringify(DEF));for(const k in d.settings)if(DB.settings[k]===undefined)DB.settings[k]=d.settings[k];if(!DB.certs)DB.certs=[];if(!DB.settings.cardPhones)DB.settings.cardPhones={};if(DB.settings.shares==='30,20,14,10,8,6,4,3,3,2')DB.settings.shares='50,30,20';{const C=DB.settings.cards||{},OLD={milli:'9762 0000 0000 0000',alif:'+992 900 00 00 00',dc:'4444 0000 0000 0000',eskhata:'4000 0000 0000 0000',humo:'9860 0000 0000 0000',visa:'4111 0000 0000 0000'};for(const k in OLD)if(C[k]===OLD[k])C[k]=k==='dc'?'9762 0001 2075 8775':'';if(/expresspay/i.test(DB.settings.dcTpl||''))DB.settings.dcTpl=''}})();
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(DB))}catch(e){toast('Хотира тўлди')}}
 
 /* ============ ЁРДАМЧИЛАР ============ */
@@ -2181,10 +2181,10 @@ function adminRead(uid){const c=chatOf(uid);if(c.ua){c.ua=0;save()}}
 DB.settings.dcF1=DB.settings.dcF1||'133';
 function payRef(){const n=(DB.settings.paySeq||100)+1;DB.settings.paySeq=n;return 'BD'+n}
 function uniqAmt(total){const used=new Set(DB.payments.filter(p=>p.status==='pending').map(p=>Math.round(p.amount*100)));for(let k=0;k<300;k++){const c=Math.round(total*100)+R(1,99);if(!used.has(c))return c/100}return total}
-const PAYRE=/^https?:\/\/pay\.(dc|expresspay)\.tj\//i;
+const PAYRE=/^https?:\/\/pay\.dc\.tj\//i;
 function dcLink(card,amt,ref){const tpl=(DB.settings.dcTpl||'').trim();
  if(PAYRE.test(tpl)){try{const u=new URL(tpl);u.searchParams.set('s',amt.toFixed(2));u.searchParams.set('c',ref);return u.toString()}catch(e){}}
- return `http://pay.expresspay.tj/?A=${String(card).replace(/\D/g,'')}&s=${amt.toFixed(2)}&c=${encodeURIComponent(ref)}&f1=${encodeURIComponent(DB.settings.dcF1||'133')}&FIELD2=&FIELD3=`}
+ return `https://pay.dc.tj/?a=${String(card).replace(/\D/g,'')}&f1=${encodeURIComponent(DB.settings.dcF1||'133')}&c=${encodeURIComponent(ref)}&s=${amt.toFixed(2)}`}
 function openPay(){const P=CO.pay;if(!P)return;const url=dcLink(DB.settings.cards.dc||'',P.amt,P.ref);if(/; wv\)/.test(navigator.userAgent))location.href=url;else window.open(url,'_blank','noopener')}
 const amtTxt=a=>a.toFixed(2).replace('.',',');
 checkout=function(total){const m=METHODS.find(x=>x.id===CO.method);const card=DB.settings.cards[CO.method]||'';
@@ -2214,7 +2214,7 @@ async function submitPay2(){const P=CO.pay;if(!P)return;const u=me();if(DB.payme
  const f=$('tf');const proof=f&&f.files[0]?await shrink(f.files[0]):null;const pl=DB.settings.plans[P.plan];
  DB.payments.unshift({id:'p'+Date.now(),ref:P.ref,uid:u.id,g:gradeOf(u),months:pl.m,amount:P.amt,base:P.base,method:P.method,tx:'',proof,status:'pending',date:new Date().toISOString(),promo:CO.promo?CO.promo.code:null});
  CO.promo=null;CO.pay=null;save();sheet(`<div class="center"><span class="ico l mx pop" style="background:var(--warns);color:var(--warn);width:68px;height:68px;border-radius:22px;margin-bottom:14px">${I('hour',30)}</span><h2>Тўлов юборилди</h2><p class="mut sm" style="line-height:1.5">Тўлов коди: <b class="num" style="color:var(--ink)">${P.ref}</b> · ${amtTxt(P.amt)} ${CUR}<br>Пул тушгани текширилгач обунангиз фаоллашади.</p><button class="btn" onclick="closeSheet();go('home')">Тушунарли</button></div>`)}
-const _vASetDC=vASet;vASet=function(){return _vASetDC().replace(/(<input id="cp_dc"[^>]*>)/,'$1<label>Тўлов ҳаволаси (DC Next\'дан)</label><input id="dctpl" placeholder="http://pay.expresspay.tj/?A=…" value="'+esc(DB.settings.dcTpl||'')+'"><div class="xs mut" style="margin-top:4px;line-height:1.4">Сумма ва тўлов коди ўзи қўйилади. Бўш бўлса — карта рақамидан ясалади</div><input id="dcf1" type="hidden" value="'+esc(DB.settings.dcF1||'133')+'">')};
+const _vASetDC=vASet;vASet=function(){return _vASetDC().replace(/(<input id="cp_dc"[^>]*>)/,'$1<label>Тўлов ҳаволаси (DC Next\'дан)</label><input id="dctpl" placeholder="https://pay.dc.tj/?a=…" value="'+esc(DB.settings.dcTpl||'')+'"><div class="xs mut" style="margin-top:4px;line-height:1.4">Сумма ва тўлов коди ўзи қўйилади. Бўш бўлса — карта рақамидан ясалади</div><input id="dcf1" type="hidden" value="'+esc(DB.settings.dcF1||'133')+'">')};
 const _saveSetDC=saveSet;saveSet=function(){const e=$('dcf1');if(e){const v=e.value.replace(/\D/g,'');DB.settings.dcF1=v||'133'}const t=$('dctpl');if(t){const v=t.value.trim();DB.settings.dcTpl=PAYRE.test(v)?v:''}return _saveSetDC.apply(this,arguments)};
 
 /* ============ 3 ТИЛ: танлаш ============ */
