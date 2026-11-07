@@ -370,6 +370,13 @@ html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
 .lgi.on{color:var(--pri)}
 .lgc{width:38px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--sf2);font-weight:900;font-size:12px}
 .lgi.on .lgc{background:var(--pri);color:#fff}
+.pcard{margin-top:10px;border-radius:14px;background:var(--card2);padding:10px 12px}
+.pcard summary{list-style:none;display:flex;align-items:center;gap:10px;cursor:pointer}
+.pcard summary::-webkit-details-marker{display:none}
+.pchv{display:inline-flex;transform:rotate(90deg);transition:transform .2s;color:var(--mut)}.pcard[open] .pchv{transform:rotate(-90deg)}
+.plg{color:#fff;border-radius:8px;padding:5px 8px;font-size:11px;font-weight:800;min-width:34px;text-align:center}
+.pnm{flex:1;min-width:0;display:flex;flex-direction:column}
+.pnm .xs{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -912,6 +919,11 @@ const I18N={
 'Ҳумо':['Ҳумо','Хумо'],
 'ҳал':['ҳал','решено'],
 /* қўшимча (рендерда учрайдиган) */
+'Бўш қолдирилган усул ўқувчиларга кўринмайди':['Усули холӣ ба хонандагон намоён намешавад','Пустой способ не показывается ученикам'],
+'Тўлов ҳаволаси (DC Next\'дан':['Ҳаволаи пардохт (аз DC Next','Ссылка на оплату (из DC Next'],
+'Сумма ва тўлов коди ўзи қўйилади. Бўш бўлса — карта рақамидан ясалади':['Маблағ ва рамзи пардохт худкор гузошта мешаванд. Агар холӣ бошад — аз рақами корт сохта мешавад','Сумма и код платежа подставляются сами. Если пусто — собирается из номера карты'],
+'Карта эгаси (исм фамилия':['Соҳиби корт (ному насаб','Владелец карты (имя фамилия'],
+'Телефон рақами':['Рақами телефон','Номер телефона'],
 'Dushanbe City ҳаволаси (телефон рақамига ўтказма учун':['Ҳаволаи Душанбе Сити (барои интиқол ба рақами телефон','Ссылка Dushanbe City (для перевода на номер телефона'],
 'DC Next иловасидан олинган тўлов ҳаволасини шу ерга қўйинг — сумма ва код ўзи алмаштирилади. Бўш бўлса, карта рақами ишлатилади':['Ҳаволаи пардохтро аз DC Next ин ҷо гузоред — маблағ ва рамз худкор иваз мешаванд. Агар холӣ бошад, рақами корт истифода мешавад','Вставьте ссылку на оплату из DC Next — сумма и код подставятся сами. Если пусто, используется номер карты'],
 'Хизмат коди (f1, карта учун':['Рамзи хизмат (f1, барои корт','Код услуги (f1, для карты'],
@@ -1446,15 +1458,16 @@ const CUR='сомонӣ';
 const METHODS=[
  {id:'milli',n:'Корти Миллӣ',lg:'КМ',c:'#0A7D3B'},{id:'alif',n:'Alif Mobi',lg:'alif',c:'#00A651'},{id:'dc',n:'Dushanbe City',lg:'DC',c:'#D7141A'},
  {id:'eskhata',n:'Эсхата',lg:'ЭСХ',c:'#0B4EA2'},{id:'humo',n:'Ҳумо',lg:'HUMO',c:'#283593'},{id:'visa',n:'Visa / MC',lg:'VISA',c:'#1A1F71'}];
+function payMethods(){const C=(typeof DB!=='undefined'&&DB.settings&&DB.settings.cards)||{};const L=METHODS.filter(m=>String(C[m.id]||'').replace(/\D/g,'').length>=9);return L.length?L:METHODS.filter(m=>m.id==='dc')}
 const DEF={users:[],questions:STATIC,payments:[],withdrawals:[],prizes:[],closed:[],certs:[],
  promos:[{code:'МАКТАБ10',pct:10},{code:'BILIM20',pct:20}],
  settings:{plans:[{m:1,price:39},{m:2,price:72},{m:3,price:99},{m:6,price:179},{m:12,price:299}],
   poolPct:40,minPts:100,minAns:200,minAcc:70,shares:'50,30,20',fix:'30,20,10',minPayers:5,groupMode:'all',pts:10,refPct:10,refDisc:10,minWd:20,admin:'admin123',
-  cards:{milli:'9762 0000 0000 0000',alif:'+992 900 00 00 00',dc:'4444 0000 0000 0000',eskhata:'4000 0000 0000 0000',humo:'9860 0000 0000 0000',visa:'4111 0000 0000 0000'},cardPhones:{},holder:'Исм Фамилия'},
+  cards:{milli:'',alif:'',dc:'9762 0001 2075 8775',eskhata:'',humo:'',visa:''},cardPhones:{},holder:'Исм Фамилия',dcTpl:'http://pay.expresspay.tj/?A=9762000120758775&s=&c=&f1=133&FIELD2=&FIELD3='},
  ui:{theme:'night'},sess:null};
 const SKEY='bilimdon_tj_v2';
 function load(){try{const r=localStorage.getItem(SKEY);if(r){const d=Object.assign(JSON.parse(JSON.stringify(DEF)),JSON.parse(r));d.ui=d.ui||{theme:'night'};if(!['night','emerald','light'].includes(d.ui.theme))d.ui.theme='night';d.questions=STATIC.concat((d.questions||[]).filter(q=>String(q.id).startsWith('n')).map(q=>Object.assign({g1:1,g2:11},q)));return d}}catch(e){}return JSON.parse(JSON.stringify(DEF))}
-let DB=load();(function(){const d=JSON.parse(JSON.stringify(DEF));for(const k in d.settings)if(DB.settings[k]===undefined)DB.settings[k]=d.settings[k];if(!DB.certs)DB.certs=[];if(!DB.settings.cardPhones)DB.settings.cardPhones={};if(DB.settings.shares==='30,20,14,10,8,6,4,3,3,2')DB.settings.shares='50,30,20'})();
+let DB=load();(function(){const d=JSON.parse(JSON.stringify(DEF));for(const k in d.settings)if(DB.settings[k]===undefined)DB.settings[k]=d.settings[k];if(!DB.certs)DB.certs=[];if(!DB.settings.cardPhones)DB.settings.cardPhones={};if(DB.settings.shares==='30,20,14,10,8,6,4,3,3,2')DB.settings.shares='50,30,20';{const C=DB.settings.cards||{},OLD={milli:'9762 0000 0000 0000',alif:'+992 900 00 00 00',dc:'4444 0000 0000 0000',eskhata:'4000 0000 0000 0000',humo:'9860 0000 0000 0000',visa:'4111 0000 0000 0000'};for(const k in OLD)if(C[k]===OLD[k])C[k]=k==='dc'?'9762 0001 2075 8775':''}})();
 function save(){try{localStorage.setItem(SKEY,JSON.stringify(DB))}catch(e){toast('Хотира тўлди')}}
 
 /* ============ ЁРДАМЧИЛАР ============ */
@@ -1637,7 +1650,7 @@ function rank(u){const r=DB.users.slice().sort((a,b)=>stat(b).pts-stat(a).pts);r
 /* ============ ТАРИФЛАР ВА ТЎЛОВ ============ */
 let CO={plan:2,method:'milli',promo:null};
 function back(to,t){return `<div class="bar-top"><button class="pill ic" onclick="go('${to}')">${I('left',18)}</button><b>${t||''}</b><span style="width:34px"></span></div>`}
-function vPlans(){const u=me();const P=DB.settings.plans;if(CO.plan>=P.length)CO.plan=0;const pl=P[CO.plan];const firstBuy=!DB.payments.some(p=>p.uid===u.id&&p.status==='ok');
+function vPlans(){const u=me();const P=DB.settings.plans;if(CO.plan>=P.length)CO.plan=0;{const PM=payMethods();if(!PM.some(m=>m.id===CO.method))CO.method=PM[0].id}const pl=P[CO.plan];const firstBuy=!DB.payments.some(p=>p.uid===u.id&&p.status==='ok');
  const refD=u.by&&firstBuy?DB.settings.refDisc:0,prD=CO.promo?CO.promo.pct:0,d=Math.min(50,refD+prD),total=Math.round(pl.price*(100-d))/100;
  const best=P.reduce((b,p,i)=>discountOf(p)>discountOf(P[b])?i:b,0);
  return back('home','Обуна')+`<div class="pad page"><h1>Тарифни танланг</h1><p class="mut sm" style="margin:0 0 18px">Узоқ муддатга олсангиз — арзонроқ. Барча фанлар очиқ.</p>
@@ -1647,7 +1660,7 @@ function vPlans(){const u=me();const P=DB.settings.plans;if(CO.plan>=P.length)CO
  <div class="card mt"><label style="margin-top:0">Промокод</label><div class="row"><input id="pc" placeholder="МАКТАБ10" value="${CO.promo?CO.promo.code:''}"><button class="btn s" onclick="applyPromo()">Қўллаш</button></div>
   ${CO.promo?`<div class="sm row" style="color:var(--ok);margin-top:10px;gap:6px">${I('check',16,2.4)}${CO.promo.code}: −${CO.promo.pct}%</div>`:''}${refD?`<div class="sm row" style="color:var(--ok);margin-top:8px;gap:6px">${I('gift',16)}Дўст таклифи: −${refD}% (биринчи тўлов)</div>`:''}</div>
  <div class="sec-h"><h2>Тўлов усули</h2></div>
- <div class="pm">${METHODS.map(m=>`<button class="pmb ${CO.method===m.id?'on':''}" onclick="CO.method='${m.id}';render()"><span class="lg" style="background:${m.c}">${m.lg}</span>${m.n}</button>`).join('')}</div>
+ <div class="pm">${payMethods().map(m=>`<button class="pmb ${CO.method===m.id?'on':''}" onclick="CO.method='${m.id}';render()"><span class="lg" style="background:${m.c}">${m.lg}</span>${m.n}</button>`).join('')}</div>
  <div class="card mt lst"><div class="it"><span class="mut" style="flex:1">Тариф</span><b>${pl.m} ой</b></div><div class="it"><span class="mut" style="flex:1">Нарх</span><span class="num">${money(pl.price)}</span></div>
   ${d?`<div class="it"><span class="mut" style="flex:1">Чегирма</span><span style="color:var(--ok)">−${d}%</span></div>`:''}<div class="it"><span style="flex:1;font-weight:700">Жами</span><b class="num" style="font-size:20px">${money(total)}</b></div></div>
  <div style="height:14px"></div><button class="btn" onclick="checkout(${total})">Тўлаш · ${money(total)}</button>
@@ -1923,9 +1936,11 @@ function vASet(){const S=DB.settings;return `<div class="bar-top"><h1 style="mar
   <label>Кафолат нечта обуначидан бошланади</label><input id="s10" type="number" value="${S.minPayers}">
   <label>Рейтинг гуруҳлари</label><select id="s11"><option value="all" ${S.groupMode==='all'?'selected':''}>Ҳамма битта рейтингда (бошланишига)</option><option value="g3" ${S.groupMode==='g3'?'selected':''}>3 гуруҳ: 1–4, 5–8, 9–11-синф</option><option value="class" ${S.groupMode==='class'?'selected':''}>Ҳар синф алоҳида</option></select>
   <div class="xs mut" style="margin-top:8px;line-height:1.5">Ҳар бир ўринга фоиз ва кафолатдан қайси бири катта бўлса, шу берилади. Тушум 5 та обуначидан кам бўлса — фақат фоиз (зарар бўлмайди).</div></div>
- <div class="card mb"><h2>Пул қабул қилувчи карталар</h2><label>Карта эгаси</label><input id="hd" value="${esc(S.holder)}">${METHODS.map(m=>`<div style="margin-top:14px;padding:12px;border-radius:14px;background:var(--card2)"><div class="row" style="gap:8px"><span style="background:${m.c};color:#fff;border-radius:7px;padding:3px 8px;font-size:11px;font-weight:800">${m.lg}</span><b class="sm">${m.n}</b></div>
-  <label>Карта рақами</label><input id="cd_${m.id}" inputmode="numeric" value="${esc(S.cards[m.id]||'')}" placeholder="0000 0000 0000 0000">
-  <label>Картага уланган телефон рақами</label><input id="cp_${m.id}" type="tel" inputmode="tel" value="${esc(fmtPh((S.cardPhones||{})[m.id])||'')}" placeholder="+992 __ ___ __ __"></div>`).join('')}</div>
+ <div class="card mb"><h2>Пул қабул қилувчи карталар</h2><label>Карта эгаси (исм фамилия)</label><input id="hd" value="${esc(S.holder)}">
+  <div class="xs mut" style="margin-top:8px;line-height:1.4">Бўш қолдирилган усул ўқувчиларга кўринмайди</div>
+  ${METHODS.map(m=>`<details class="pcard" ${m.id==='dc'?'open':''}><summary><span class="plg" style="background:${m.c}">${m.lg}</span><span class="pnm"><b class="sm">${m.n}</b><span class="xs mut num">${esc(S.cards[m.id]||'—')}${(S.cardPhones||{})[m.id]?' · '+esc(fmtPh(S.cardPhones[m.id])):''}</span></span><span class="pchv">${I('right',16)}</span></summary>
+  <div class="g2" style="margin-top:2px"><div><label>Карта рақами</label><input id="cd_${m.id}" inputmode="numeric" value="${esc(S.cards[m.id]||'')}" placeholder="0000 0000 0000 0000"></div>
+  <div><label>Телефон рақами</label><input id="cp_${m.id}" type="tel" inputmode="tel" value="${esc(fmtPh((S.cardPhones||{})[m.id])||'')}" placeholder="+992 __ ___ __ __"></div></div></details>`).join('')}</div>
  <div class="card mb"><h2>Промокодлар</h2><div class="lst mt">${DB.promos.map((p,i)=>`<div class="it"><span class="row" style="flex:1">${I('tag',16)}<b>${esc(p.code)}</b></span><span class="tag t-ok">−${p.pct}%</span><button class="pill ic" onclick="delPromo(${i})">${I('trash',15)}</button></div>`).join('')}</div>
   <div class="row" style="margin-top:12px"><input id="nc" placeholder="КОД"><input id="np" type="number" placeholder="%" style="width:80px"><button class="btn s" onclick="addPromo()">${I('plus',16)}</button></div></div>
  <div class="card mb"><h2>Техник ёрдам рақами</h2><p class="xs mut">Ўқувчилар WhatsApp'га ёзади ёки қўнғироқ қилади</p><input id="sup" type="tel" value="${esc(fmtPh(supNum()))}"></div>
@@ -2166,9 +2181,10 @@ function adminRead(uid){const c=chatOf(uid);if(c.ua){c.ua=0;save()}}
 DB.settings.dcF1=DB.settings.dcF1||'133';
 function payRef(){const n=(DB.settings.paySeq||100)+1;DB.settings.paySeq=n;return 'BD'+n}
 function uniqAmt(total){const used=new Set(DB.payments.filter(p=>p.status==='pending').map(p=>Math.round(p.amount*100)));for(let k=0;k<300;k++){const c=Math.round(total*100)+R(1,99);if(!used.has(c))return c/100}return total}
+const PAYRE=/^https?:\/\/pay\.(dc|expresspay)\.tj\//i;
 function dcLink(card,amt,ref){const tpl=(DB.settings.dcTpl||'').trim();
- if(/^https:\/\/pay\.dc\.tj\//.test(tpl)){try{const u=new URL(tpl);u.searchParams.set('s',amt.toFixed(2));u.searchParams.set('c',ref);return u.toString()}catch(e){}}
- return `https://pay.dc.tj/?a=${String(card).replace(/\D/g,'')}&f1=${encodeURIComponent(DB.settings.dcF1||'133')}&c=${encodeURIComponent(ref)}&s=${amt.toFixed(2)}`}
+ if(PAYRE.test(tpl)){try{const u=new URL(tpl);u.searchParams.set('s',amt.toFixed(2));u.searchParams.set('c',ref);return u.toString()}catch(e){}}
+ return `http://pay.expresspay.tj/?A=${String(card).replace(/\D/g,'')}&s=${amt.toFixed(2)}&c=${encodeURIComponent(ref)}&f1=${encodeURIComponent(DB.settings.dcF1||'133')}&FIELD2=&FIELD3=`}
 function openPay(){const P=CO.pay;if(!P)return;const url=dcLink(DB.settings.cards.dc||'',P.amt,P.ref);if(/; wv\)/.test(navigator.userAgent))location.href=url;else window.open(url,'_blank','noopener')}
 const amtTxt=a=>a.toFixed(2).replace('.',',');
 checkout=function(total){const m=METHODS.find(x=>x.id===CO.method);const card=DB.settings.cards[CO.method]||'';
@@ -2198,8 +2214,8 @@ async function submitPay2(){const P=CO.pay;if(!P)return;const u=me();if(DB.payme
  const f=$('tf');const proof=f&&f.files[0]?await shrink(f.files[0]):null;const pl=DB.settings.plans[P.plan];
  DB.payments.unshift({id:'p'+Date.now(),ref:P.ref,uid:u.id,g:gradeOf(u),months:pl.m,amount:P.amt,base:P.base,method:P.method,tx:'',proof,status:'pending',date:new Date().toISOString(),promo:CO.promo?CO.promo.code:null});
  CO.promo=null;CO.pay=null;save();sheet(`<div class="center"><span class="ico l mx pop" style="background:var(--warns);color:var(--warn);width:68px;height:68px;border-radius:22px;margin-bottom:14px">${I('hour',30)}</span><h2>Тўлов юборилди</h2><p class="mut sm" style="line-height:1.5">Тўлов коди: <b class="num" style="color:var(--ink)">${P.ref}</b> · ${amtTxt(P.amt)} ${CUR}<br>Пул тушгани текширилгач обунангиз фаоллашади.</p><button class="btn" onclick="closeSheet();go('home')">Тушунарли</button></div>`)}
-const _vASetDC=vASet;vASet=function(){return _vASetDC().replace(/(<input id="cp_dc"[^>]*>)/,'$1<label>Dushanbe City ҳаволаси (телефон рақамига ўтказма учун)</label><input id="dctpl" placeholder="https://pay.dc.tj/?..." value="'+esc(DB.settings.dcTpl||'')+'"><div class="xs mut" style="margin-top:4px">DC Next иловасидан олинган тўлов ҳаволасини шу ерга қўйинг — сумма ва код ўзи алмаштирилади. Бўш бўлса, карта рақами ишлатилади</div><label>Хизмат коди (f1, карта учун)</label><input id="dcf1" inputmode="numeric" value="'+esc(DB.settings.dcF1||'133')+'"><div class="xs mut" style="margin-top:4px">Ўқувчи тугмани босганда шу карта, сумма ва тўлов коди билан Dushanbe City очилади</div>')};
-const _saveSetDC=saveSet;saveSet=function(){const e=$('dcf1');if(e){const v=e.value.replace(/\D/g,'');DB.settings.dcF1=v||'133'}const t=$('dctpl');if(t){const v=t.value.trim();DB.settings.dcTpl=/^https:\/\/pay\.dc\.tj\//.test(v)?v:''}return _saveSetDC.apply(this,arguments)};
+const _vASetDC=vASet;vASet=function(){return _vASetDC().replace(/(<input id="cp_dc"[^>]*>)/,'$1<label>Тўлов ҳаволаси (DC Next\'дан)</label><input id="dctpl" placeholder="http://pay.expresspay.tj/?A=…" value="'+esc(DB.settings.dcTpl||'')+'"><div class="xs mut" style="margin-top:4px;line-height:1.4">Сумма ва тўлов коди ўзи қўйилади. Бўш бўлса — карта рақамидан ясалади</div><input id="dcf1" type="hidden" value="'+esc(DB.settings.dcF1||'133')+'">')};
+const _saveSetDC=saveSet;saveSet=function(){const e=$('dcf1');if(e){const v=e.value.replace(/\D/g,'');DB.settings.dcF1=v||'133'}const t=$('dctpl');if(t){const v=t.value.trim();DB.settings.dcTpl=PAYRE.test(v)?v:''}return _saveSetDC.apply(this,arguments)};
 
 /* ============ 3 ТИЛ: танлаш ============ */
 DB.ui=DB.ui||{};if(!DB.ui.lang)DB.ui.lang=LANG;
