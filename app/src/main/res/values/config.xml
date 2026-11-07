@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Серверингиз манзили. Масалан: https://bilimdon.tj  (сервер тайёр бўлгач ёзинг)
+         Бўш қолдирилса, илова демо режимда (телефон ичидаги нусха) очилади. -->
+    <string name="server_url" translatable="false"></string>
+</resources>
