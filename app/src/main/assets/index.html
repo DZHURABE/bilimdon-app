@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#040A1E">
 <title>Билимдон Pro — билим билан пул топ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#040A1E;--sf:rgba(18,32,74,.42);--sf2:rgba(255,255,255,.07);--ink:#F2F6FF;--ink2:#C9D5F2;--mut:#8EA0C9;--line:rgba(120,170,255,.16);--line2:rgba(120,190,255,.32);
  --pri:#3B82F6;--pri2:#60A5FA;--pris:rgba(59,130,246,.16);--cy:#22D3EE;--ok:#34D399;--oks:rgba(52,211,153,.14);--warn:#FBBF24;--warns:rgba(251,191,36,.14);--bad:#F87171;--bads:rgba(248,113,113,.14);
@@ -397,6 +397,85 @@ html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
 .asec[open] .pchv{transform:rotate(-90deg)}
 .assave{position:fixed;left:0;right:0;bottom:84px;padding:0 16px;max-width:560px;margin:0 auto;z-index:5}
 .assave .btn{box-shadow:0 10px 30px rgba(0,0,0,.35)}
+
+/* ===================== SHOKH IT услуби (скин) ===================== */
+:root,[data-theme=night],[data-theme=emerald]{--bg:#11161B;--card:#1A2027;--card2:#232A32;--sf2:#232A32;--line:#2A323B;--line2:#2A323B;--ink:#EEF3F1;--ink2:#C9D3D0;--mut:#8D9A97;
+ --acc:#22C08F;--acc2:#0F8F6A;--accs:#16362D;--pri:#22C08F;--pri2:#2FCB8C;--pris:#16362D;--acc-ink:#062018;--hero1:#139B77;--hero2:#0B5E4B;
+ --ok:#2FCB8C;--oks:rgba(47,203,140,.14);--bad:#FF6B57;--bads:#3A1E1B;--warn:#F1B541;--warns:rgba(241,181,65,.14);--input:#1A2027;--navbg:#1A2027;--track:#232A32;
+ --fd:"Unbounded","Golos Text",system-ui,sans-serif;--fb:"Golos Text","Noto Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+[data-theme=light]{--bg:#F2F5F4;--card:#FFFFFF;--card2:#EEF2F1;--sf2:#EEF2F1;--line:#DCE3E0;--line2:#DCE3E0;--ink:#14201E;--ink2:#33423F;--mut:#667873;
+ --acc:#0F9D7A;--acc2:#0B7A5F;--accs:#D7F1E9;--pri:#0F9D7A;--pri2:#0B7A5F;--pris:#D7F1E9;--acc-ink:#FFFFFF;--hero1:#0F9D7A;--hero2:#0A6E5C;
+ --ok:#0E9A6C;--oks:#D7F1E9;--bad:#D8442F;--bads:#FBE3DE;--warn:#C98A12;--warns:#FBF0D9;--input:#FFFFFF;--navbg:#FFFFFF;--track:#E7ECEA}
+html,body{background:var(--bg)!important}
+body{font-family:var(--fb)!important;font-size:15px;color:var(--ink)}
+body::before,body::after,.bg-blobs,.blob{display:none!important}
+h1,.bar-top h1,.hdt,.big,.money,.hero b.num{font-family:var(--fd)!important;letter-spacing:-.02em}
+h1{font-weight:600}
+h2{font-family:var(--fb)!important;font-weight:600;letter-spacing:0}
+.num{font-variant-numeric:tabular-nums}
+/* карталар — текис, чегарасиз */
+.card,.tile,.sqt,.stat,.qcard,.opt,.pmb,.ccard2,.achrow,.lst,.asec,.prow,.pcard,.pced{background:var(--card)!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.card,.asec,.qcard,.ccard2{border-radius:22px!important}
+.tile,.sqt,.stat,.opt,.prow{border-radius:18px!important}
+.card2,.pced,.prow.ph{background:var(--card2)!important}
+/* тугмалар */
+.btn{background:var(--acc)!important;color:var(--acc-ink)!important;border:0!important;border-radius:16px!important;font-weight:600!important;box-shadow:none!important;background-image:none!important}
+.btn.sec,.btn.ghost{background:var(--card)!important;color:var(--ink)!important}
+.btn.okb{background:var(--acc)!important;color:var(--acc-ink)!important}
+.btn.bad,.btn.red{background:var(--bad)!important;color:#fff!important}
+.pill,.sq,.chip2{background:var(--card)!important;border:0!important;box-shadow:none!important;color:var(--ink)}
+.pgo{background:var(--acc)!important;color:var(--acc-ink)!important}
+/* майдонлар */
+input,select,textarea{background:var(--card)!important;border:1.5px solid var(--line)!important;border-radius:14px!important;color:var(--ink)!important;box-shadow:none!important}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)!important;outline:none}
+label{color:var(--mut)!important;font-weight:500!important}
+.tag{border-radius:7px!important}
+/* тепа сарлавҳа — SHOKH «phead» */
+.bar-top{position:sticky;top:0;z-index:6;background:var(--bg)!important;border-bottom:1px solid var(--line);backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:10px 12px!important;display:grid!important;grid-template-columns:44px 1fr 44px;align-items:center}
+.bar-top>b,.bar-top>h1{text-align:center;font-family:var(--fb)!important;font-size:19px!important;font-weight:500!important;grid-column:2}
+.bar-top>h1:only-child{grid-column:1 / -1}
+.bar-top .pill.ic{background:transparent!important;width:44px;height:44px}
+/* пастки меню — текис панель */
+.nav.nav2{left:0!important;right:0!important;bottom:0!important;margin:0 auto!important;max-width:520px;width:100%!important;border-radius:0!important;background:var(--card)!important;border:0!important;border-top:1px solid var(--line)!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px))!important;transform:none!important}
+.nav.nav2 button{background:transparent!important;box-shadow:none!important;color:var(--mut)!important}
+.nav.nav2 button.on,.nav.nav2 button[aria-current]{color:var(--acc)!important}
+.nav.nav2 button.on .ni,.nav.nav2 .ni{background:transparent!important;box-shadow:none!important}
+.nav.nav2 .nt{font-size:12px!important}
+/* ҳеро — яшил градиент */
+.hero,.hcard,.prize-hero,.ccard2.hero{background:radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.18) 0,transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(0,0,0,.25) 0,transparent 60%),linear-gradient(150deg,var(--hero1),var(--hero2))!important;color:#fff!important;border:0!important}
+/* пастки ойна */
+.sheet .sh,#sheet .sh,.shc{background:var(--bg)!important;border-radius:24px 24px 0 0!important;border:0!important}
+.grab,.sheet .bar{background:var(--line)!important}
+/* сегмент / тил */
+.lseg{background:var(--card)!important;border:0!important}
+.lseg button.on{background:var(--acc)!important;color:var(--acc-ink)!important}
+/* тарифлар — SHOKH IT кўриниши */
+.sk-h{text-align:center;font-family:var(--fd)!important;font-size:26px;margin:22px 0 6px;font-weight:600}
+.sk-sub{text-align:center;color:var(--mut);margin:0 0 18px;font-size:14.5px}
+.sk-st{background:var(--card);border-radius:22px;padding:16px 18px;margin-bottom:12px}
+.sk-st small{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.sk-st b{display:block;font-family:var(--fd);font-size:20px;margin-top:4px;color:var(--acc)}
+.sk-st b.off{color:var(--warn)}
+.sk-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.sk-plan{position:relative;display:grid;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:14px 12px 12px;text-align:left;color:var(--ink)}
+.sk-plan.on{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,var(--card))}
+.sk-plan .pr{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px}
+.sk-rd{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.sk-plan.on .sk-rd{border-color:var(--acc)}
+.sk-plan.on .sk-rd::after{content:'';width:12px;height:12px;border-radius:50%;background:var(--acc)}
+.sk-price{background:var(--bg);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px}
+.sk-price b{display:block;font-family:var(--fd);font-size:28px;line-height:1.1}
+.sk-price span{font-size:14px;color:var(--mut)}
+.sk-per{text-align:center;font-size:13px;color:var(--mut)}
+.sk-per em{display:block;font-style:normal;color:var(--acc);font-weight:600}
+.sk-badge{position:absolute;top:-11px;right:10px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--warn);color:#1b1300}
+.sk-badge.hot{background:#FF6B57;color:#fff}
+.sk-plan.wide{grid-column:1 / -1}
+.sk-pay{display:block;width:100%;margin-top:16px;background:var(--acc);color:var(--acc-ink);border-radius:20px;padding:14px;text-align:center;box-shadow:0 10px 30px -12px color-mix(in srgb,var(--acc) 70%,transparent)}
+.sk-pay b{display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--fd);font-size:19px}
+.sk-pay span{display:block;font-size:13.5px;opacity:.85;margin-top:2px}
+.sk-promo summary{list-style:none;cursor:pointer;color:var(--mut);font-size:14px;text-align:center;margin-top:12px}
+.sk-promo summary::-webkit-details-marker{display:none}
 </style>
 </head>
 <body>
@@ -939,6 +1018,12 @@ const I18N={
 'Ҳумо':['Ҳумо','Хумо'],
 'ҳал':['ҳал','решено'],
 /* қўшимча (рендерда учрайдиган) */
+'Фаол':['Фаъол','Активна'],
+'кун қолди':['рӯз монд','дн. осталось'],
+'тежайсиз':['сарфа мекунед','экономия'],
+'Промокод борми?':['Промокод доред?','Есть промокод?'],
+'Узоқ муддатга олсангиз — арзонроқ':['Барои муддати дароз — арзонтар','Чем дольше срок — тем дешевле'],
+'Тарифни танланг':['Тарифро интихоб кунед','Выберите тариф'],
 'Тўлов карталари':['Кортҳои пардохт','Карты для оплаты'],
 'та карта':['корт','карт'],
 'Мукофот ва рейтинг':['Мукофот ва рейтинг','Призы и рейтинг'],
@@ -2342,6 +2427,26 @@ saveSet=function(){const S=DB.settings,v=id=>{const e=$(id);return e?e.value:nul
  if(v('sup')!==null){const sp=normPh(v('sup'));if(!sp)return toast('Техник ёрдам рақами нотўғри','info');S.support=sp}
  const pw=v('apw');if(pw&&pw.length>=4)S.admin=pw;else if(pw)return toast('Парол камида 4 белги','info');
  save();toast('Сақланди','check');render()};
+
+
+/* ============ ТАРИФЛАР — SHOKH IT кўриниши ============ */
+vPlans=function(){const u=me();const P=DB.settings.plans;if(CO.plan>=P.length)CO.plan=0;const pl=P[CO.plan];const firstBuy=!DB.payments.some(p=>p.uid===u.id&&p.status==='ok');
+ const refD=u.by&&firstBuy?DB.settings.refDisc:0,prD=CO.promo?CO.promo.pct:0,d=Math.min(50,refD+prD),total=Math.round(pl.price*(100-d))/100;
+ const best=P.reduce((b,p,i)=>discountOf(p)>discountOf(P[b])?i:b,0);const pop=P.length>2?2:-1;
+ const left=u.subUntil?Math.ceil((new Date(u.subUntil)-Date.now())/864e5):0;const pend=DB.payments.some(p=>p.uid===u.id&&p.status==='pending');
+ const save1=p=>Math.round(P[0].price*p.m-p.price);
+ return back('home','Обуна')+`<div class="pad page">
+ <div class="sk-h">Тарифни танланг</div><p class="sk-sub">Узоқ муддатга олсангиз — арзонроқ</p>
+ <div class="sk-st"><small>Обуна</small>${left>0?`<b class="num">Фаол: ${left} кун қолди</b>`:pend?`<b class="off">Тўловингиз текширилмоқда</b>`:`<b class="off">Фаол эмас</b>`}</div>
+ <div class="sk-plans">${P.map((p,i)=>{const dc=discountOf(p);const wide=P.length%2===1&&i===P.length-1;return `<button class="sk-plan ${CO.plan===i?'on':''} ${wide?'wide':''}" onclick="CO.plan=${i};render()">
+  ${i===best?'<span class="sk-badge hot">ЭНГ ФОЙДАЛИ</span>':i===pop&&best!==pop?'<span class="sk-badge">ОММАБОП</span>':''}
+  <span class="pr"><span class="sk-rd"></span>${p.m} ой</span>
+  <span class="sk-price"><b class="num">${p.price}</b><span>${CUR}</span></span>
+  <span class="sk-per num">${money(Math.round(p.price/p.m))} / ой${dc?`<em>−${dc}% · ${money(save1(p))} тежайсиз</em>`:''}</span></button>`}).join('')}</div>
+ ${CO.promo||refD?`<div class="sm row" style="color:var(--acc);margin-top:12px;gap:6px;justify-content:center">${I('check',16,2.4)}${CO.promo?`${esc(CO.promo.code)}: −${CO.promo.pct}%`:''}${refD?` Дўст таклифи: −${refD}%`:''}</div>`:''}
+ <details class="sk-promo"><summary>Промокод борми?</summary><div class="row" style="margin-top:8px;gap:8px"><input id="pc" placeholder="МАКТАБ10" value="${CO.promo?esc(CO.promo.code):''}"><button class="btn s" style="width:auto" onclick="applyPromo()">Қўллаш</button></div></details>
+ <button class="sk-pay" onclick="checkout(${total})"><b>${I('card',20)}Тўлаш</b><span class="num">${pl.m} ой · ${money(total)}</span></button>
+ <p class="xs mut center row" style="justify-content:center;gap:6px;margin-top:12px">${I('shield',15)}Тўлов текширилгач обуна фаоллашади</p></div>`};
 
 /* ============ 3 ТИЛ: танлаш ============ */
 DB.ui=DB.ui||{};if(!DB.ui.lang)DB.ui.lang=LANG;
